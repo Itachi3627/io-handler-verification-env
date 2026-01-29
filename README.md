@@ -1,7 +1,7 @@
-# IO_Handler Verification Environment
+# io-handler-verification-env
 
 ## Overview
-This repository contains a complete SystemVerilog verification environment for the `IO_Handler` module. The environment is a pure SystemVerilog (SV) class-based testbench designed to verify memory-mapped I/O operations, interrupt logic, and register integrity without reliance on UVM methodology.
+The **io-handler-verification-env** repository contains a complete SystemVerilog verification environment for the `IO_Handler` module. The environment is a pure SystemVerilog (SV) class-based testbench designed to verify memory-mapped I/O operations, interrupt logic, and register integrity without reliance on UVM methodology.
 
 ## EDA Playground Demo
 **Try it online:** [https://www.edaplayground.com/x/fH77](https://www.edaplayground.com/x/fH77)
@@ -281,5 +281,4 @@ Contributions are welcome! Please feel free to submit pull requests or open issu
 ## Support
 For questions or issues:
 * Open an issue in this repository
-* Try the interactive demo on EDA Playground: [https://www.edaplayground.com/x/fH77](https://www.edaplayground.com/x/fH77)#   i o - h a n d l e r - v e r i f i c a t i o n - e n v  
- 
+* Try the interactive demo on EDA Playground: [https://www.edaplayground.com/x/fH77](https://www.edaplayground.com/x/fH77)
