@@ -6,7 +6,7 @@ The **io-handler-verification-env** repository contains a complete SystemVerilog
 
 ## EDA Playground Demo
 
-**Try it online:** [https://www.edaplayground.com/x/fH77](https://www.edaplayground.com/x/fH77)
+**Try it online:** [https://www.edaplayground.com/x/ecaW](https://www.edaplayground.com/x/ecaW)
 
 This project is ready to run on EDA Playground using **Cadence Xcelium** simulator.
 
