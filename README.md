@@ -1,14 +1,17 @@
 # io-handler-verification-env
 
 ## Overview
+
 The **io-handler-verification-env** repository contains a complete SystemVerilog verification environment for the `IO_Handler` module. The environment is a pure SystemVerilog (SV) class-based testbench designed to verify memory-mapped I/O operations, interrupt logic, and register integrity without reliance on UVM methodology.
 
 ## EDA Playground Demo
+
 **Try it online:** [https://www.edaplayground.com/x/fH77](https://www.edaplayground.com/x/fH77)
 
 This project is ready to run on EDA Playground using **Cadence Xcelium** simulator.
 
 ## Architecture
+
 The testbench follows a layered architecture:
 
 | Component | Description |
@@ -39,22 +42,22 @@ A dedicated coverage class tracks which registers, ports, and corner-case values
 ## Data Flow
 
 ```
-┌──────────────┐
-│  Generator   │ Creates randomized transactions
-└──────┬───────┘
-       │ (Mailbox)
-       ▼
-┌──────────────┐
-│   Driver     │ Drives physical signals via interface
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐        ┌──────────────┐
-│  IO_Handler  │◄──────►│   Monitor    │ Samples interface signals
-│     DUT      │        └──────┬───────┘
-└──────────────┘               │
-                               ├────────► Scoreboard (checking)
-                               └────────► Coverage (analysis)
+   ┌──────────────┐
+   │  Generator   │  Creates randomized transactions
+   └──────┬───────┘
+          │ (Mailbox)
+          ▼
+   ┌──────────────┐
+   │   Driver     │  Drives physical signals via interface
+   └──────┬───────┘
+          │
+          ▼
+   ┌──────────────┐        ┌──────────────┐
+   │  IO_Handler  │◄──────►│   Monitor    │  Samples interface signals
+   │     DUT      │        └──────┬───────┘
+   └──────────────┘               │
+                                  ├────────► Scoreboard (checking)
+                                  └────────► Coverage (analysis)
 ```
 
 ## Verification Features
@@ -72,111 +75,29 @@ The `transaction` class includes constraints to ensure valid testing:
 * **Read/Write Ratio:** Maintains a 50/50 split between read and write operations.
 
 ## Directory Structure
+
 ```
 verification_env/
 ├── rtl/
-│   └── design.sv            # The IO_Handler DUT
+│   └── design.sv           # The IO_Handler DUT
 ├── tb/
-│   ├── interface.sv         # Interface with modports and clocking blocks
-│   ├── transaction.sv       # Transaction data class with randomization constraints
-│   ├── generator.sv         # Generates constrained random stimulus
-│   ├── driver.sv            # Drives packet data to pins
-│   ├── monitor.sv           # Samples pins to reconstruct packets
-│   ├── scoreboard.sv        # Reference model and checker
-│   ├── coverage.sv          # Functional coverage groups and bins
-│   ├── environment.sv       # Container class connecting all components
-│   └── top.sv               # Top-level testbench module
-├── README.md                # This file
-└── LICENSE                  # MIT License
-```
-
-## How to Run
-
-### On EDA Playground
-1. Visit [https://www.edaplayground.com/x/fH77](https://www.edaplayground.com/x/fH77)
-2. Select **Cadence Xcelium** as the simulator
-3. Click **Run** to execute the simulation
-4. View results in the console output and waveform viewer
-
-### Using Cadence Xcelium (Local Installation)
-
-#### Quick Run with Coverage (Recommended)
-Use the provided `run.bash` script for a single-command execution with full coverage collection:
-
-```bash
-chmod +x run.bash
-./run.bash
-```
-
-This script executes `xrun` with the following features:
-- **Unbuffered output** for real-time log viewing
-- **Full coverage collection** (code, functional, and assertion coverage)
-- **Waveform access** for debugging
-- **Coverage overwrite** mode for clean runs
-
-**Script Contents:**
-```bash
-xrun -Q -unbuffered -timescale 1ns/1ns -sysv -access +rw \
-     -coverage all -covoverwrite design.sv testbench.sv
-```
-
-#### Manual Compilation (Alternative Method)
-
-##### Compile
-```bash
-xmvlog -sv rtl/design.sv \
-            tb/interface.sv \
-            tb/transaction.sv \
-            tb/generator.sv \
-            tb/driver.sv \
-            tb/monitor.sv \
-            tb/scoreboard.sv \
-            tb/coverage.sv \
-            tb/environment.sv \
-            tb/top.sv
-```
-
-##### Elaborate
-```bash
-xmelab -timescale 1ns/1ps -access +rwc tb
-```
-
-##### Simulate
-```bash
-xmsim tb -gui
-# Or for command-line mode:
-xmsim tb -input "@run; exit"
-```
-
-### Using Other Simulators
-
-This environment is IEEE-1800 compliant and can run on any SystemVerilog simulator:
-
-#### Synopsys VCS
-```bash
-vcs -sverilog -full64 +v2k -timescale=1ns/1ps \
-    rtl/design.sv tb/*.sv -o simv
-./simv
-```
-
-#### Mentor Questa/ModelSim
-```bash
-vlog -sv rtl/design.sv tb/*.sv
-vsim -c tb -do "run -all; quit"
-```
-
-#### Xilinx Vivado
-```bash
-xvlog -sv rtl/design.sv tb/*.sv
-xelab -debug typical tb -s tb_sim
-xsim tb_sim -runall
+│   ├── interface.sv        # Interface with modports and clocking blocks
+│   ├── transaction.sv      # Transaction data class with randomization constraints
+│   ├── generator.sv        # Generates constrained random stimulus
+│   ├── driver.sv           # Drives packet data to pins
+│   ├── monitor.sv          # Samples pins to reconstruct packets
+│   ├── scoreboard.sv       # Reference model and checker
+│   ├── coverage.sv         # Functional coverage groups and bins
+│   ├── environment.sv      # Container class connecting all components
+│   └── top.sv              # Top-level testbench module
+├── README.md               # This file
+└── LICENSE                 # MIT License
 ```
 
 ## Simulation Output
 
 ### Console Logs
 During simulation, you'll see detailed logs from each component:
-
 ```
 [SCOREBOARD] Transaction #1: PASS
 [MONITOR] Captured Write to CTRL register
@@ -208,8 +129,8 @@ Then load the coverage database to view:
 #### Coverage Database Location
 ```
 xcelium.d/
-├── cov_work/           # Coverage database
-└── coverage.vdb/       # Merged coverage data
+├── cov_work/         # Coverage database
+└── coverage.vdb/     # Merged coverage data
 ```
 
 #### Key Coverage Metrics to Monitor
@@ -266,18 +187,20 @@ xrun -Q -unbuffered -timescale 1ns/1ns -sysv -access +rw design.sv testbench.sv
 - [ ] Read-after-write scenarios verified
 
 ## Requirements
+
 * SystemVerilog-compatible simulator (IEEE 1800-2012 or later)
 * Recommended: Cadence Xcelium, Synopsys VCS, Mentor Questa, or Xilinx Vivado
 
 ## License
+
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-
-
 ## Contributing
+
 Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
 
 ## Support
+
 For questions or issues:
 * Open an issue in this repository
 * Try the interactive demo on EDA Playground: [https://www.edaplayground.com/x/fH77](https://www.edaplayground.com/x/fH77)
