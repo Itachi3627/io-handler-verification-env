@@ -272,8 +272,7 @@ xrun -Q -unbuffered -timescale 1ns/1ns -sysv -access +rw design.sv testbench.sv
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Author
-[Your Name/Organization]
+
 
 ## Contributing
 Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
