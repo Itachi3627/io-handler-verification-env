@@ -15,6 +15,7 @@ class scoreboard;
 
     function new(mailbox #(transaction) m2s);
         this.mon2scb = m2s;
+    
         for(int i = 0; i < 4; i++) begin
             ref_data_in_reg[i]  = 8'h00;
             ref_data_out_reg[i] = 8'h00;
@@ -27,14 +28,13 @@ class scoreboard;
     task reference_model(transaction trans);
         logic [3:0] port_sel;
         logic [1:0] reg_sel;
-        bit irq_clear_pending; 
 
         port_sel = trans.io_addr[5:2];
         reg_sel  = trans.io_addr[1:0];
-        irq_clear_pending = 0;
 
       
         if (trans.io_read) begin
+            
             if (port_sel < 4) begin
                 case (reg_sel)
                     2'b00: expected_rdata = {24'b0, ref_data_in_reg[port_sel]};
@@ -43,35 +43,27 @@ class scoreboard;
                     2'b11: expected_rdata = {24'b0, ref_status_reg[port_sel]};
                 endcase
             end else begin
+                
                 expected_rdata = {24'b0, 8'bx}; 
             end
 
-            
+           
             if (reg_sel == 2'b11) begin
-                irq_clear_pending = 1;
+                ref_io_irq = 0; 
                 if (port_sel < 4) begin
                     ref_status_reg[port_sel][0] = 1'b0; 
                 end
             end
         end
 
-      
         for (int i=0; i<4; i=i+1) begin
             if (trans.io_in[i] != ref_data_in_reg[i]) begin
                 ref_data_in_reg[i] = trans.io_in[i];
-                ref_status_reg[i][0] = 1; // This might "undo" the bit clear from Step 1
+                ref_status_reg[i][0] = 1;
                 
-                // Set IRQ if enabled
-                if (ref_control_reg[i][0]) ref_io_irq = 1;
-            end
-        end
-
-        
-        if (irq_clear_pending) begin
-            ref_io_irq = 0;
-            
-            if (port_sel < 4) begin
-                ref_status_reg[port_sel][0] = 0; 
+                if (ref_control_reg[i][0]) begin
+                    ref_io_irq = 1; 
+                end
             end
         end
     endtask
@@ -102,10 +94,10 @@ class scoreboard;
         if (trans.io_read) begin
             if (trans.io_rdata !== expected_rdata) begin
                 $display("[SCOREBOARD]  FAIL: io_rdata mismatch!");
-                $display("             Expected: 0x%h, Got: 0x%h", expected_rdata, trans.io_rdata);
+                $display("             Expected: 0x%0h, Got: 0x%0h", expected_rdata, trans.io_rdata);
                 error = 1;
             end else begin
-                $display("[SCOREBOARD]  PASS: io_rdata = 0x%h", trans.io_rdata);
+                $display("[SCOREBOARD]  PASS: io_rdata = 0x%0h", trans.io_rdata);
             end
         end
 
@@ -120,10 +112,10 @@ class scoreboard;
         for(int i = 0; i < 4; i++) begin
             if (trans.io_out[i] !== ref_data_out_reg[i]) begin
                 $display("[SCOREBOARD] FAIL: io_out[%0d] mismatch!", i);
-                $display("             Expected: 0x%h, Got: 0x%h", ref_data_out_reg[i], trans.io_out[i]);
+                $display("             Expected: 0x%0h, Got: 0x%0h", ref_data_out_reg[i], trans.io_out[i]);
                 error = 1;
             end else begin
-                $display("[SCOREBOARD] PASS: io_out[%0d] = 0x%h", i, trans.io_out[i]);
+                $display("[SCOREBOARD] PASS: io_out[%0d] = 0x%0h", i, trans.io_out[i]);
             end
         end
 
@@ -131,7 +123,7 @@ class scoreboard;
             $display("\n[SCOREBOARD] ----- Internal Register State (Reference) -----");
             for(int i = 0; i < 4; i++) begin
                 $display("[SCOREBOARD] Port[%0d]:", i);
-                $display("             REF: data_in=0x%h, data_out=0x%h, ctrl=0x%h, status=0x%h",
+                $display("             REF: data_in=0x%0h, data_out=0x%0h, ctrl=0x%0h, status=0x%0h",
                          ref_data_in_reg[i], ref_data_out_reg[i], ref_control_reg[i], ref_status_reg[i]);
             end
             fail_count++;
@@ -172,5 +164,4 @@ class scoreboard;
         end
         $display("========================================================================\n");
     endfunction
-
 endclass
