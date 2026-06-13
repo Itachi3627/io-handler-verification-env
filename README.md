@@ -1,8 +1,8 @@
-# io-handler-verification-env
+# Memory-Mapped-IO-Peripheral
 
 ## Overview
 
-The **io-handler-verification-env** repository contains a complete SystemVerilog verification environment for the `IO_Handler` module. The environment is a pure SystemVerilog (SV) class-based testbench designed to verify memory-mapped I/O operations, interrupt logic, and register integrity without reliance on UVM methodology.
+The **Memory-Mapped-IO-Peripheral** repository contains a complete SystemVerilog verification environment for the `IO_Handler` module. The environment is a pure SystemVerilog (SV) class-based testbench designed to verify memory-mapped I/O operations, interrupt logic, and register integrity without reliance on UVM methodology.
 
 ## EDA Playground Demo
 
